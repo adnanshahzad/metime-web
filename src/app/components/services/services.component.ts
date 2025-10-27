@@ -1,20 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
-interface Service {
-  _id: string;
-  name: string;
-  description?: string;
-  categoryId: string;
-  duration: number;
-  price: number;
-  isActive: boolean;
-  images: string[];
-  thumbnails: string[];
-  notes?: string;
-}
+import { ApiService, Service } from '../../services/api.service';
+import { environment } from '../../../environments/environment';
 
 interface ServiceCategory {
   _id: string;
@@ -59,16 +47,20 @@ interface ServiceCategory {
 
         <div *ngIf="!isLoading && services.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div *ngFor="let service of services" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-            <div *ngIf="service.images && service.images.length > 0" class="h-48 bg-gray-200">
+            <div class="h-48 bg-gray-200">
               <img 
+                *ngIf="service.images && service.images.length > 0"
                 [src]="getImageUrl(service.images[0])" 
                 [alt]="service.name"
                 class="w-full h-full object-cover"
                 (error)="onImageError($event)"
               />
-            </div>
-            <div *ngIf="!service.images || service.images.length === 0" class="h-48 bg-gray-200 flex items-center justify-center">
-              <span class="text-gray-500 text-lg">No Image</span>
+              <img 
+                *ngIf="!service.images || service.images.length === 0"
+                [src]="getFallbackImageUrl()" 
+                [alt]="service.name"
+                class="w-full h-full object-cover"
+              />
             </div>
             
             <div class="p-6">
@@ -98,14 +90,14 @@ export class ServicesComponent implements OnInit {
   services: Service[] = [];
   isLoading = true;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadServices();
   }
 
   loadServices(): void {
-    this.http.get<Service[]>('http://localhost:3000/public/services').subscribe({
+    this.apiService.getServices().subscribe({
       next: (services: Service[]) => {
         this.services = services;
         this.isLoading = false;
@@ -122,13 +114,17 @@ export class ServicesComponent implements OnInit {
   }
 
   getImageUrl(imagePath: string): string {
-    // Remove any duplicate uploads path
-    const cleanPath = imagePath.replace(/^\/?uploads\//, '');
-    return `http://localhost:3000/uploads/${cleanPath}`;
+    // The imagePath already includes 'uploads/' prefix, so we just prepend the base URL
+    return `${environment.apiUrl}/${imagePath}`;
+  }
+
+  getFallbackImageUrl(): string {
+    // Use a sample image that we know exists in production
+    return `${environment.apiUrl}/uploads/services/sample-service-4f92451f-ba21-4227-bcae-f249e10b9d3d.png`;
   }
 
   onImageError(event: any): void {
-    // Hide the image if it fails to load
-    event.target.style.display = 'none';
+    // Set fallback image if the original image fails to load
+    event.target.src = this.getFallbackImageUrl();
   }
 }
