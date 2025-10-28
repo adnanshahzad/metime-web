@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 interface RegisterRequest {
   email: string;
@@ -149,7 +150,7 @@ export class RegisterComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.http.post('http://localhost:3000/public/auth/register', this.registerData)
+    this.http.post(`${environment.apiUrl}/public/auth/register`, this.registerData)
       .subscribe({
         next: (response: any) => {
           this.isLoading = false;

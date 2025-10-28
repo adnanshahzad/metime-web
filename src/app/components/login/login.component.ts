@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 interface LoginRequest {
   email: string;
@@ -123,7 +124,7 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.http.post<LoginResponse>('http://localhost:3000/public/auth/login', this.loginData)
+    this.http.post<LoginResponse>(`${environment.apiUrl}/public/auth/login`, this.loginData)
       .subscribe({
         next: (response: LoginResponse) => {
           // Store tokens and user data
