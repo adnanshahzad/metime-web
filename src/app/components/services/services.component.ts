@@ -110,7 +110,7 @@ export class ServicesComponent implements OnInit {
   }
 
   bookService(service: Service): void {
-    alert(`Booking ${service.name} - This feature will be implemented soon!`);
+    this.router.navigate(['/booking', service._id]);
   }
 
   getImageUrl(imagePath: string): string {

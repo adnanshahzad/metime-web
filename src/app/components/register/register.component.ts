@@ -10,6 +10,7 @@ interface RegisterRequest {
   password: string;
   firstname: string;
   lastname: string;
+  role: string;
 }
 
 @Component({
@@ -131,7 +132,8 @@ export class RegisterComponent {
     email: '',
     password: '',
     firstname: '',
-    lastname: ''
+    lastname: '',
+    role: 'customer'
   };
   
   isLoading = false;
@@ -161,7 +163,8 @@ export class RegisterComponent {
             email: '',
             password: '',
             firstname: '',
-            lastname: ''
+            lastname: '',
+            role: 'customer'
           };
           
           // Redirect to login after 2 seconds

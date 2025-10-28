@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 interface User {
-  id: string;
+  _id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   role: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 @Component({
@@ -51,7 +54,7 @@ interface User {
                 Sign Up
               </button>
             </div>
-            
+
             <div *ngIf="isAuthenticated()" class="flex items-center space-x-4">
               <div class="flex items-center space-x-2">
                 <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
@@ -60,7 +63,7 @@ interface User {
                   </span>
                 </div>
                 <span class="text-sm font-medium text-gray-700">
-                  {{ currentUser?.firstName }} {{ currentUser?.lastName }}
+                  {{ currentUser?.firstname }} {{ currentUser?.lastname }}
                 </span>
               </div>
               <button (click)="logout()" class="text-sm text-gray-600 hover:text-gray-900">
@@ -91,7 +94,7 @@ interface User {
             <button (click)="goToMyBookings(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/my-bookings') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'" *ngIf="isAuthenticated()">
               My Bookings
             </button>
-            
+
             <div *ngIf="!isAuthenticated()" class="pt-4 border-t border-gray-200 space-y-2">
               <button (click)="goToLogin(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">
                 Sign In
@@ -100,7 +103,7 @@ interface User {
                 Sign Up
               </button>
             </div>
-            
+
             <div *ngIf="isAuthenticated()" class="pt-4 border-t border-gray-200">
               <div class="flex items-center space-x-2 mb-2">
                 <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
@@ -109,7 +112,7 @@ interface User {
                   </span>
                 </div>
                 <span class="text-sm font-medium text-gray-700">
-                  {{ currentUser?.firstName }} {{ currentUser?.lastName }}
+                  {{ currentUser?.firstname }} {{ currentUser?.lastname }}
                 </span>
               </div>
               <button (click)="logout(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">
@@ -150,7 +153,7 @@ export class NavigationComponent implements OnInit {
 
   getInitials(): string {
     if (!this.currentUser) return 'U';
-    return `${this.currentUser.firstName.charAt(0)}${this.currentUser.lastName.charAt(0)}`.toUpperCase();
+    return `${this.currentUser.firstname.charAt(0)}${this.currentUser.lastname.charAt(0)}`.toUpperCase();
   }
 
   isActiveRoute(route: string): boolean {

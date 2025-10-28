@@ -1,20 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ApiService, Booking } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
-interface Booking {
-  _id: string;
-  customerId: string;
-  services: any[];
-  bookingDate: string;
-  bookingTime: string;
-  status: string;
-  totalAmount: number;
-  customerNotes?: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 @Component({
   selector: 'app-my-bookings',
@@ -30,7 +19,7 @@ interface Booking {
               <h1 class="text-3xl font-bold text-gray-900">My Bookings</h1>
               <p class="mt-2 text-gray-600">Manage your service appointments</p>
             </div>
-            <button (click)="goToServices()" class="btn-primary">
+            <button (click)="goToServices()" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
               Book New Service
             </button>
           </div>
@@ -39,6 +28,31 @@ interface Booking {
 
       <!-- Content -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Success Message -->
+        <div *ngIf="showSuccessMessage" class="bg-green-50 border border-green-200 rounded-md p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-green-800">
+                Booking confirmed successfully! Your appointment has been scheduled.
+              </p>
+            </div>
+            <div class="ml-auto pl-3">
+              <div class="-mx-1.5 -my-1.5">
+                <button (click)="dismissSuccessMessage()" class="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600">
+                  <span class="sr-only">Dismiss</span>
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div *ngIf="isLoading" class="text-center py-12">
           <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <p class="mt-2 text-gray-600">Loading your bookings...</p>
@@ -52,7 +66,7 @@ interface Booking {
           </div>
           <h3 class="text-lg font-medium text-gray-900 mb-2">No bookings yet</h3>
           <p class="text-gray-600 mb-6">Start by booking your first service</p>
-          <button (click)="goToServices()" class="btn-primary">
+          <button (click)="goToServices()" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
             Browse Services
           </button>
         </div>
@@ -73,7 +87,7 @@ interface Booking {
               <div class="space-y-3">
                 <div *ngFor="let service of booking.services" class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                   <div>
-                    <h4 class="font-medium text-gray-900">{{ service.serviceId?.name || 'Service' }}</h4>
+                    <h4 class="font-medium text-gray-900">{{ service.serviceName || 'Service' }}</h4>
                     <p class="text-sm text-gray-600">Quantity: {{ service.quantity }}</p>
                   </div>
                   <div class="text-right">
@@ -86,17 +100,17 @@ interface Booking {
                 <div class="flex justify-between items-center">
                   <div>
                     <p class="text-sm text-gray-600">Total Amount</p>
-                    <p class="text-lg font-bold text-gray-900">{{ booking.totalAmount | currency }}</p>
+                    <p class="text-lg font-bold text-gray-900">{{ booking.totalPrice | currency }}</p>
                   </div>
                   <div class="flex space-x-2">
                     <button 
                       *ngIf="booking.status === 'confirmed'"
                       (click)="cancelBooking(booking._id)"
-                      class="btn-secondary text-sm"
+                      class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
                     >
                       Cancel
                     </button>
-                    <button (click)="viewBookingDetails(booking)" class="btn-primary text-sm">
+                    <button (click)="viewBookingDetails(booking)" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm">
                       View Details
                     </button>
                   </div>
@@ -113,42 +127,50 @@ interface Booking {
 export class MyBookingsComponent implements OnInit {
   bookings: Booking[] = [];
   isLoading = true;
+  showSuccessMessage = false;
 
   constructor(
-    private http: HttpClient,
-    private router: Router
+    private apiService: ApiService,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    // Check for success message from booking
+    this.route.queryParams.subscribe(params => {
+      if (params['success'] === 'true') {
+        this.showSuccessMessage = true;
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+          this.showSuccessMessage = false;
+        }, 5000);
+      }
+    });
+    
     this.loadBookings();
   }
 
   loadBookings(): void {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
+    // Check if user is authenticated
+    if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    const headers = {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    };
-
-    this.http.get<Booking[]>('http://localhost:3000/v1/bookings/my-bookings', { headers })
-      .subscribe({
-        next: (bookings: Booking[]) => {
-          this.bookings = bookings;
-          this.isLoading = false;
-        },
-        error: (error: any) => {
-          console.error('Error loading bookings:', error);
-          this.isLoading = false;
-          if (error.status === 401) {
-            this.router.navigate(['/login']);
-          }
+    this.apiService.getMyBookings().subscribe({
+      next: (bookings: Booking[]) => {
+        this.bookings = bookings;
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading bookings:', error);
+        this.isLoading = false;
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
         }
-      });
+      }
+    });
   }
 
   formatDate(dateString: string): string {
@@ -180,35 +202,32 @@ export class MyBookingsComponent implements OnInit {
   }
 
   getServicePrice(service: any): number {
-    return service.customPrice || service.serviceId?.price || 0;
+    return service.customPrice || service.servicePrice || 0;
   }
 
   cancelBooking(bookingId: string): void {
     if (confirm('Are you sure you want to cancel this booking?')) {
-      const token = localStorage.getItem('access_token');
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      };
-
-      this.http.patch(`http://localhost:3000/v1/bookings/${bookingId}/cancel`, {}, { headers })
-        .subscribe({
-          next: () => {
-            this.loadBookings(); // Reload bookings
-          },
-          error: (error: any) => {
-            console.error('Error cancelling booking:', error);
-            alert('Failed to cancel booking. Please try again.');
-          }
-        });
+      this.apiService.cancelBooking(bookingId).subscribe({
+        next: () => {
+          this.loadBookings(); // Reload bookings
+        },
+        error: (error: any) => {
+          console.error('Error cancelling booking:', error);
+          alert('Failed to cancel booking. Please try again.');
+        }
+      });
     }
   }
 
   viewBookingDetails(booking: Booking): void {
-    alert(`Booking Details:\n\nID: ${booking._id}\nDate: ${this.formatDate(booking.bookingDate)}\nTime: ${booking.bookingTime}\nStatus: ${booking.status}\nTotal: $${booking.totalAmount}`);
+    alert(`Booking Details:\n\nID: ${booking._id}\nDate: ${this.formatDate(booking.bookingDate)}\nTime: ${booking.bookingTime}\nStatus: ${booking.status}\nTotal: $${booking.totalPrice}`);
   }
 
   goToServices(): void {
     this.router.navigate(['/services']);
+  }
+
+  dismissSuccessMessage(): void {
+    this.showSuccessMessage = false;
   }
 }

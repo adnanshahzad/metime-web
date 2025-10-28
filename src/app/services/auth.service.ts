@@ -5,11 +5,14 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 export interface User {
-  id: string;
+  _id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   role: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LoginRequest {
@@ -18,17 +21,19 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  access_token: string;
-  refresh_token: string;
+  message: string;
+  accessToken: string;
+  refreshToken: string;
   user: User;
 }
 
 export interface RegisterRequest {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   role: string;
+  companyId?: string;
 }
 
 @Injectable({
@@ -49,7 +54,7 @@ export class AuthService {
   private loadUserFromStorage(): void {
     const token = localStorage.getItem('access_token');
     const user = localStorage.getItem('current_user');
-    
+
     if (token && user) {
       try {
         this.currentUserSubject.next(JSON.parse(user));
@@ -63,8 +68,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/public/auth/login`, credentials)
       .pipe(
         tap(response => {
-          localStorage.setItem('access_token', response.access_token);
-          localStorage.setItem('refresh_token', response.refresh_token);
+          localStorage.setItem('access_token', response.accessToken);
+          localStorage.setItem('refresh_token', response.refreshToken);
           localStorage.setItem('current_user', JSON.stringify(response.user));
           this.currentUserSubject.next(response.user);
         })
@@ -97,6 +102,13 @@ export class AuthService {
 
   getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('access_token');
+    
+    if (!token || token === 'null' || token === 'undefined') {
+      return new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
+    }
+    
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -108,8 +120,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/refresh`, { refresh_token: refreshToken })
       .pipe(
         tap(response => {
-          localStorage.setItem('access_token', response.access_token);
-          localStorage.setItem('refresh_token', response.refresh_token);
+          localStorage.setItem('access_token', response.accessToken);
+          localStorage.setItem('refresh_token', response.refreshToken);
         })
       );
   }

@@ -11,14 +11,18 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  access_token: string;
-  refresh_token: string;
+  message: string;
+  accessToken: string;
+  refreshToken: string;
   user: {
-    id: string;
+    _id: string;
     email: string;
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
     role: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
   };
 }
 
@@ -128,8 +132,8 @@ export class LoginComponent {
       .subscribe({
         next: (response: LoginResponse) => {
           // Store tokens and user data
-          localStorage.setItem('access_token', response.access_token);
-          localStorage.setItem('refresh_token', response.refresh_token);
+          localStorage.setItem('access_token', response.accessToken);
+          localStorage.setItem('refresh_token', response.refreshToken);
           localStorage.setItem('current_user', JSON.stringify(response.user));
           
           this.isLoading = false;

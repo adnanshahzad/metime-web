@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 
@@ -37,14 +38,39 @@ export interface BookingRequest {
 export interface Booking {
   _id: string;
   customerId: string;
-  services: any[];
+  customerEmail: string;
+  services: {
+    serviceId: string;
+    companyServiceId?: string;
+    quantity: number;
+    customPrice?: number;
+    serviceName: string;
+    serviceDuration: number;
+    servicePrice: number;
+  }[];
   bookingDate: string;
   bookingTime: string;
+  duration: number;
+  totalPrice: number;
   status: string;
-  totalAmount: number;
+  assignedCompanyId?: string;
+  assignedCompanyName?: string;
+  assignedUserId?: string;
+  assignedUserEmail?: string;
+  assignedBy?: string;
+  assignedByEmail?: string;
   customerNotes?: string;
+  adminNotes?: string;
+  paymentStatus: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface BookingsResponse {
+  bookings: Booking[];
+  total: number;
+  page: number;
+  limit: number;
 }
 
 @Injectable({
@@ -101,7 +127,10 @@ export class ApiService {
   }
 
   getMyBookings(): Observable<Booking[]> {
-    return this.http.get<Booking[]>(`${this.API_URL}/v1/bookings/my-bookings`, { headers: this.getHeaders() });
+    return this.http.get<BookingsResponse>(`${this.API_URL}/v1/bookings/my-bookings`, { headers: this.getHeaders() })
+      .pipe(
+        map(response => response.bookings)
+      );
   }
 
   cancelBooking(bookingId: string): Observable<Booking> {
