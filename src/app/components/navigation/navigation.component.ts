@@ -22,7 +22,7 @@ interface User {
           <div class="flex items-center">
             <button (click)="goHome()" class="flex items-center space-x-2">
               <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span class="text-white font-bold text-sm">D</span>
+                <span class="text-white font-bold text-sm">DTS</span>
               </div>
               <span class="text-xl font-bold text-gray-900">DailyTherapySpa</span>
             </button>

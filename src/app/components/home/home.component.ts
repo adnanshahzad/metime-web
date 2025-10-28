@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
       <div class="bg-gradient-to-r from-primary-600 to-primary-700 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div class="text-center">
-            <h1 class="text-5xl font-bold mb-6">Welcome to MeTime</h1>
+            <h1 class="text-5xl font-bold mb-6">Welcome to DailyTherapySpa</h1>
             <p class="text-xl text-primary-100 max-w-3xl mx-auto mb-8">
               Discover and book professional services tailored to your needs. 
               From wellness to beauty, we connect you with the best service providers in your area.
@@ -33,7 +33,7 @@ import { Router } from '@angular/router';
       <div class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose MeTime?</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose DailyTherapySpa?</h2>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto">
               We make it easy to find and book the services you need, when you need them.
             </p>
@@ -78,7 +78,7 @@ import { Router } from '@angular/router';
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to Get Started?</h2>
           <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who have found their perfect service providers through MeTime.
+            Join thousands of satisfied customers who have found their perfect service providers through DailyTherapySpa.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <button (click)="navigateToServices()" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-lg px-8 py-3">
