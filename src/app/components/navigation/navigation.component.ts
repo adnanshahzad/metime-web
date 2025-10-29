@@ -47,10 +47,10 @@ interface User {
           <!-- User Actions -->
           <div class="flex items-center space-x-4">
             <div *ngIf="!isAuthenticated()" class="flex items-center space-x-2">
-              <button (click)="goToLogin()" class="btn-secondary">
+              <button (click)="goToLogin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200">
                 Sign In
               </button>
-              <button (click)="goToRegister()" class="btn-primary">
+              <button (click)="goToRegister()" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
                 Sign Up
               </button>
             </div>
@@ -99,7 +99,7 @@ interface User {
               <button (click)="goToLogin(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">
                 Sign In
               </button>
-              <button (click)="goToRegister(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">
+              <button (click)="goToRegister(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 bg-primary-600 hover:bg-primary-700 text-white">
                 Sign Up
               </button>
             </div>
