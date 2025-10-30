@@ -33,15 +33,18 @@ interface User {
 
           <!-- Navigation Links -->
           <div class="hidden md:flex items-center space-x-8">
-            <button (click)="goHome()" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900'">
-              Home
-            </button>
-            <button (click)="goToServices()" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/services') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900'">
-              Services
-            </button>
-            <button (click)="goToMyBookings()" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/my-bookings') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900'" *ngIf="isAuthenticated()">
-              My Bookings
-            </button>
+            <ng-container *ngIf="isActiveRoute('/'); else appLinks">
+              <button (click)="scrollTo('about')" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">About us</button>
+              <button (click)="scrollTo('services')" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Our Services</button>
+              <button (click)="scrollTo('products')" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Products</button>
+              <button (click)="scrollTo('why')" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Why us</button>
+              <button (click)="scrollTo('contact')" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Contact us</button>
+            </ng-container>
+            <ng-template #appLinks>
+              <button (click)="goHome()" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900'">Home</button>
+              <button (click)="goToServices()" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/services') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900'">Services</button>
+              <button (click)="goToMyBookings()" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/my-bookings') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900'" *ngIf="isAuthenticated()">My Bookings</button>
+            </ng-template>
           </div>
 
           <!-- User Actions -->
@@ -85,15 +88,18 @@ interface User {
         <!-- Mobile menu -->
         <div *ngIf="showMobileMenu" class="md:hidden border-t border-gray-200 py-4">
           <div class="space-y-2">
-            <button (click)="goHome(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'">
-              Home
-            </button>
-            <button (click)="goToServices(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/services') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'">
-              Services
-            </button>
-            <button (click)="goToMyBookings(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/my-bookings') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'" *ngIf="isAuthenticated()">
-              My Bookings
-            </button>
+            <ng-container *ngIf="isActiveRoute('/'); else mobileAppLinks">
+              <button (click)="scrollTo('about'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">About us</button>
+              <button (click)="scrollTo('services'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">Our Services</button>
+              <button (click)="scrollTo('products'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">Products</button>
+              <button (click)="scrollTo('why'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">Why us</button>
+              <button (click)="scrollTo('contact'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">Contact us</button>
+            </ng-container>
+            <ng-template #mobileAppLinks>
+              <button (click)="goHome(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'">Home</button>
+              <button (click)="goToServices(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/services') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'">Services</button>
+              <button (click)="goToMyBookings(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200" [class]="isActiveRoute('/my-bookings') ? 'text-primary-600 bg-primary-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'" *ngIf="isAuthenticated()">My Bookings</button>
+            </ng-template>
 
             <div *ngIf="!isAuthenticated()" class="pt-4 border-t border-gray-200 space-y-2">
               <button (click)="goToLogin(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors duration-200">
@@ -194,5 +200,19 @@ export class NavigationComponent implements OnInit {
 
   toggleMobileMenu(): void {
     this.showMobileMenu = !this.showMobileMenu;
+  }
+
+  scrollTo(sectionId: string): void {
+    const performScroll = () => {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+    if (this.router.url !== '/') {
+      this.router.navigate(['/']).then(() => setTimeout(performScroll, 50));
+    } else {
+      performScroll();
+    }
   }
 }

@@ -72,12 +72,16 @@ interface ServiceCategory {
                 <span class="text-sm text-gray-500">{{ service.duration }} min</span>
               </div>
               
-              <button
-                (click)="bookService(service)"
-                class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                Book Now
-              </button>
+              <div class="grid grid-cols-3 gap-2 text-sm">
+                <a [href]="'tel:+971521608488'" class="text-center border rounded-md py-2 hover:bg-gray-50">Call</a>
+                <a [href]="'https://wa.me/971521608488'" target="_blank" class="text-center border rounded-md py-2 hover:bg-gray-50">WhatsApp</a>
+                <button
+                  (click)="bookService(service)"
+                  class="bg-primary-600 hover:bg-primary-700 text-white rounded-md py-2"
+                >
+                  Book
+                </button>
+              </div>
             </div>
           </div>
         </div>
