@@ -104,7 +104,7 @@ import { AuthService } from '../../services/auth.service';
                   </div>
                   <div class="flex space-x-2">
                     <button 
-                      *ngIf="booking.status === 'confirmed'"
+                      *ngIf="booking.status === 'confirmed' && !isMember()"
                       (click)="cancelBooking(booking._id)"
                       class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
                     >
@@ -203,6 +203,11 @@ export class MyBookingsComponent implements OnInit {
 
   getServicePrice(service: any): number {
     return service.customPrice || service.servicePrice || 0;
+  }
+
+  isMember(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.role === 'member';
   }
 
   cancelBooking(bookingId: string): void {
